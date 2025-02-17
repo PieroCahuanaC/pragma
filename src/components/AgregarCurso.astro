@@ -1,0 +1,155 @@
+---
+// Realizar la solicitud a la API para obtener los cursos
+const res = await fetch("http://localhost:5000/api/curso");
+const { cursos } = await res.json(); // Extraemos los cursos desde la respuesta JSON
+
+if (Astro.request.method === "POST") {
+  const contentType = Astro.request.headers.get("Content-Type") || "";
+
+  if (contentType.includes("application/x-www-form-urlencoded")) {
+    const formData = await Astro.request.formData();
+
+    const newCurso = {
+      id_curso: parseInt(formData.get("id_curso")),
+      titulo: formData.get("titulo"),
+      id_tipo: parseInt(formData.get("id_tipo")),
+      estado: formData.get("estado"),
+      id_instructor: parseInt(formData.get("id_instructor")),
+      id_categoria: parseInt(formData.get("id_categoria")),
+      precio: parseFloat(formData.get("precio")),
+    };
+
+    await fetch("http://localhost:5000/api/curso", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newCurso),
+    });
+
+    return Astro.redirect(Astro.url);
+  } else {
+    throw new Error(
+      "Content-Type debe ser 'application/x-www-form-urlencoded'."
+    );
+  }
+}
+---
+
+<div class="p-11">
+  <h2 class="text-3xl font-bold text-center mt-12">Lista de Cursos</h2>
+
+  <form
+    id="cursoForm"
+    method="POST"
+    enctype="application/x-www-form-urlencoded"
+    class="mb-6"
+  >
+    <label class="block mb-2">ID del Curso:</label>
+    <input
+      type="number"
+      id="id_curso"
+      name="id_curso"
+      class="border p-2 mb-4 w-full"
+      required
+    />
+
+    <label class="block mb-2">Título del Curso:</label>
+    <input
+      type="text"
+      id="titulo"
+      name="titulo"
+      class="border p-2 mb-4 w-full"
+      required
+    />
+
+    <label class="block mb-2">Tipo del Curso:</label>
+    <input
+      type="number"
+      id="id_tipo"
+      name="id_tipo"
+      class="border p-2 mb-4 w-full"
+      required
+    />
+
+    <label class="block mb-2">Estado del Curso:</label>
+    <input
+      type="text"
+      id="estado"
+      name="estado"
+      class="border p-2 mb-4 w-full"
+      required
+    />
+
+    <label class="block mb-2">Instructor ID:</label>
+    <input
+      type="number"
+      id="id_instructor"
+      name="id_instructor"
+      class="border p-2 mb-4 w-full"
+      required
+    />
+
+    <label class="block mb-2">Categoría ID:</label>
+    <input
+      type="number"
+      id="id_categoria"
+      name="id_categoria"
+      class="border p-2 mb-4 w-full"
+      required
+    />
+
+    <label class="block mb-2">Precio:</label>
+    <input
+      type="number"
+      step="0.01"
+      id="precio"
+      name="precio"
+      class="border p-2 mb-4 w-full"
+      required
+    />
+
+    <button type="submit" class="bg-blue-500 text-white p-2 rounded">
+      Agregar Curso
+    </button>
+  </form>
+
+  <h3 class="text-2xl font-bold mt-8">Cursos Agregados</h3>
+  <ul>
+    {
+      cursos.map((curso) => (
+        <li key={curso.id_curso} class="border p-2 my-2">
+          {curso.titulo} - ${curso.precio}
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<script>
+  document
+    .getElementById("cursoForm")
+    .addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const newCurso = {
+        id_curso: parseInt(document.getElementById("id_curso").value),
+        titulo: document.getElementById("titulo").value,
+        id_tipo: parseInt(document.getElementById("id_tipo").value),
+        estado: document.getElementById("estado").value,
+        id_instructor: parseInt(document.getElementById("id_instructor").value),
+        id_categoria: parseInt(document.getElementById("id_categoria").value),
+        precio: parseFloat(document.getElementById("precio").value),
+      };
+
+      const response = await fetch("http://localhost:5000/api/curso", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newCurso),
+      });
+
+      if (response.ok) {
+        window.location.reload();
+      } else {
+        alert("Error al agregar el curso");
+      }
+    });
+</script>

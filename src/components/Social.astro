@@ -1,0 +1,11 @@
+---
+const { platform, username } = Astro.props;
+---
+
+<div class="bg-cyan-950 text-white p-4 font-sans">
+  ¡Más información sobre mis proyectos en
+  <a
+    class="font-bold uppercase"
+    href={`https://www.${platform}.com/${username}`}>{platform}</a
+  >
+</div>

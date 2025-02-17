@@ -1,0 +1,14 @@
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  @apply grid place-items-center p-20;
+}
+
+body > div {
+  @apply container;
+}

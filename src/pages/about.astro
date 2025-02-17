@@ -1,0 +1,73 @@
+---
+//import Welcome from '../components/Welcome.astro';
+import Layout from "../layouts/Layout.astro";
+// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
+// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// This is called "Script frontmatter"
+import Navigation from "../components/Navigation.astro";
+
+const pageTitle = "Sobre mi ";
+const identify = {
+  //The use of clasp is to define an OBJECT, this is using Javascript, can store "key - value"
+  firstName: "Piero",
+  lastName: "Cahuana",
+  occupation: "Systems engineer",
+  hobbies: ["Technology", "Music", "Reading"],
+};
+
+const skills = [
+  // this is an example of an ARRAY, can store ordered values
+  "HTML",
+  "CSS",
+  "JavaScript",
+  "React",
+  "Node.js",
+  "Express",
+  "MongoDB",
+];
+
+const futureGoals = [
+  // this is an example of an ARRAY, can store ordered values
+  "Learn Python",
+  "Learn Java",
+  "Learn C#",
+];
+
+const happy = true;
+const finished = false;
+const goal = 3;
+---
+
+<Layout pageTitle={pageTitle}>
+  <div
+    class="flex justify-center items-baseline mt-10 min-h-screen bg-gray-100 tracking-wide leading-relaxed"
+  >
+    <div class="bg-white text-black border-2 border-black p-4 text-center">
+      <h1 class="font-bold font-sans uppercase">{pageTitle}</h1>
+      <h2 class="text-gray-800 italic">{identify.occupation}</h2>
+      <p class="text-xs">
+        I am a systems engineer with skills in {skills.join(", ")}. I enjoy to {
+          identify.hobbies.join(", ")
+        }.
+      </p>
+      {happy && <p>¡Estoy feliz de aprender Astro!</p>}
+
+      {finished && <p>¡He terminado este tutorial!</p>}
+
+      {
+        goal === 3 ? (
+          <p>Mi objetivo es terminar en 3 días.</p>
+        ) : (
+          <p>Mi objetivo no son 3 días.</p>
+        )
+      }
+
+      <ul class="font-bold">
+        Future Goals: {
+          futureGoals.map((goal) => <li class="font-normal">{goal} </li>)
+        }
+      </ul>
+      <Navigation />
+    </div>
+  </div>
+</Layout>

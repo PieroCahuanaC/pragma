@@ -1,0 +1,30 @@
+---
+//import Welcome from '../components/Welcome.astro';
+import Layout from "../layouts/Layout.astro";
+import Mentores from "../components/Mentores.astro";
+
+import Navigation from "../components/Navigation.astro";
+// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
+// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const pageTitle = "Pagina de inicio";
+---
+
+<Layout pageTitle={pageTitle}>
+  <div
+    class="flex justify-center items-center mt-10 h-auto bg-gray-100 flex-col"
+  >
+    <img src="carousel.png" alt="Astro Logo" class="h-auto w-full pt-0 m-0" />
+
+    <!-- Contenedor del texto y la imagen (centrado correctamente) -->
+    <div class="flex flex-col items-center text-center mt-4">
+      <p class="text-3xl font-bold font-sans mb-4">
+        Certificaciones Internacionales a tu nivel
+      </p>
+      <p class="italic text-xl font-sans mb-6">
+        Te abrimos las puertas a las oportunidades
+      </p>
+      <img src="unis.png" alt="Astro Logo" class="h-24 w-auto mt-2" />
+    </div>
+    <Mentores />
+  </div>
+</Layout>
