@@ -1,0 +1,59 @@
+<div class="p-11">
+  <h2 class="text-3xl font-bold text-center mt-12">Buscar Curso</h2>
+
+  <div class="mb-6 flex items-center gap-4">
+    <input
+      type="number"
+      id="idCurso"
+      placeholder="Ingrese ID del curso"
+      class="border p-2 w-full"
+    />
+    <button id="buscarBtn" class="bg-blue-500 text-white p-2 rounded">
+      Buscar
+    </button>
+  </div>
+
+  <p id="mensajeError" class="text-red-500"></p>
+  <div id="cursoInfo"></div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const buscarCurso = async () => {
+      const idCurso = document.getElementById("idCurso").value;
+      const mensajeError = document.getElementById("mensajeError");
+      const cursoInfo = document.getElementById("cursoInfo");
+
+      // Limpiar mensaje de error y datos anteriores
+      mensajeError.textContent = "";
+      cursoInfo.innerHTML = "";
+
+      if (!idCurso) {
+        mensajeError.textContent = "Ingrese un ID válido";
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://localhost:5000/api/curso/${idCurso}`);
+        if (!res.ok) throw new Error("Curso no encontrado");
+        const curso = await res.json();
+
+        // Insertar datos en el HTML
+        cursoInfo.innerHTML = `
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-300 text-center">
+              <h3 class="text-xl font-bold">${curso.titulo}</h3>
+              <img src="./curso.png" alt="Curso" class="h-24 w-auto mt-2 mx-auto" />
+              <p>ID: ${curso.id_curso}</p>
+              <p>Estado: ${curso.estado}</p>
+              <p>Instructor ID: ${curso.id_instructor}</p>
+              <p>Precio: $${curso.precio}</p>
+            </div>
+          `;
+      } catch (err) {
+        mensajeError.textContent = err.message;
+      }
+    };
+
+    document.getElementById("buscarBtn").addEventListener("click", buscarCurso);
+  });
+</script>

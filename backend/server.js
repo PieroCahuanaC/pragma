@@ -66,6 +66,90 @@ app.get("/api/curso", async (req, res) => {
   }
 });
 
+app.get("/api/curso/:id", async (req, res) => {
+  const { id } = req.params;
+  let connection;
+
+  try {
+    connection = await oracledb.getConnection(dbConfig);
+    const result = await connection.execute(
+      "SELECT * FROM CURSO WHERE ID_CURSO = :id",
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Curso no encontrado" });
+    }
+
+    const curso = {
+      id_curso: result.rows[0][0],
+      titulo: result.rows[0][1],
+      id_tipo: result.rows[0][2],
+      estado: result.rows[0][3],
+      id_instructor: result.rows[0][4],
+      id_categoria: result.rows[0][5],
+      precio: result.rows[0][6],
+    };
+
+    res.json(curso);
+  } catch (error) {
+    console.error("Error al obtener el curso:", error);
+    res
+      .status(500)
+      .json({ error: "Error interno del servidor", details: error.message });
+  } finally {
+    if (connection) {
+      await connection.close(); // Asegurar el cierre de la conexión
+    }
+  }
+});
+
+app.delete("/api/curso/:id", async (req, res) => {
+  const { id } = req.params;
+  console.log("ID recibido para eliminar:", id); // 👀 Verifica qué ID llega al backend
+
+  let connection;
+
+  try {
+    connection = await oracledb.getConnection(dbConfig);
+
+    // Verificar si el curso existe antes de eliminarlo
+    const checkResult = await connection.execute(
+      "SELECT ID_CURSO FROM CURSO WHERE ID_CURSO = :id",
+      [id]
+    );
+
+    if (checkResult.rows.length === 0) {
+      console.log("Curso no encontrado en la base de datos.");
+      return res.status(404).json({ error: "Curso no encontrado" });
+    }
+
+    // Eliminar el curso
+    const result = await connection.execute(
+      "DELETE FROM CURSO WHERE ID_CURSO = :id",
+      [id],
+      { autoCommit: true }
+    );
+
+    console.log("Filas afectadas:", result.rowsAffected);
+
+    if (result.rowsAffected === 0) {
+      return res.status(404).json({ error: "Curso no encontrado" });
+    }
+
+    res.json({ message: "Curso eliminado correctamente" });
+  } catch (error) {
+    console.error("Error al eliminar el curso:", error);
+    res
+      .status(500)
+      .json({ error: "Error interno del servidor", details: error.message });
+  } finally {
+    if (connection) {
+      await connection.close();
+    }
+  }
+});
+
 // Agregar un nuevo curso
 app.post("/api/curso", async (req, res) => {
   try {

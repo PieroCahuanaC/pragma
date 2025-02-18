@@ -1,0 +1,62 @@
+---
+
+---
+
+<div class="flex justify-center">
+  <div class="p-11 w-auto text-center">
+    <h1 class="text-xl font-bold mb-4">Eliminar Curso</h1>
+    <label for="idCurso" class="block mb-2">ID del Curso:</label>
+    <input
+      id="idCurso"
+      type="number"
+      class="border p-2 mb-4 w-full text-center rounded-md"
+      placeholder="Ingrese el ID"
+    />
+
+    <button id="eliminarBtn" class="bg-red-500 text-white p-2 rounded w-full">
+      Eliminar
+    </button>
+
+    <p id="mensajeExito" class="text-green-500 mt-4"></p>
+    <p id="mensajeError" class="text-red-500 mt-2"></p>
+  </div>
+</div>
+
+<script>
+  async function eliminarCurso() {
+    const idCurso = Number(document.getElementById("idCurso").value);
+    console.log("ID del curso a eliminar:", idCurso);
+
+    if (!idCurso) {
+      document.getElementById("mensajeError").textContent =
+        "Ingrese un ID válido";
+      return;
+    }
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/curso/${idCurso}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Error al eliminar el curso");
+      }
+
+      document.getElementById("mensajeExito").textContent =
+        "Curso eliminado correctamente";
+      document.getElementById("mensajeError").textContent = "";
+    } catch (err) {
+      console.error("Error al eliminar:", err);
+      document.getElementById("mensajeError").textContent = err.message;
+    }
+  }
+
+  function setupEliminarCurso() {
+    document
+      .getElementById("eliminarBtn")
+      .addEventListener("click", eliminarCurso);
+  }
+
+  window.onload = setupEliminarCurso;
+</script>
